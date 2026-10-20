@@ -9,7 +9,7 @@ conn = get_db_connection()
 cur = conn.cursor()
 
 
-with open('db/seed.sql', 'r') as file:
+with open('db/tables.sql', 'r') as file:
     sql_content = file.read()
     cur.execute(sql_content)
 
