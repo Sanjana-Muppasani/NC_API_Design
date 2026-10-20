@@ -9,4 +9,9 @@ Populate the database by with
 ```
 python db/seed.py
 ``` 
+NOTE to devs: ```.env.example``` file contains the details to enter into local .env to connect to the database 
+
+
+
+
 
