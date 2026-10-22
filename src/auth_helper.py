@@ -9,4 +9,3 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def create_hashed_passwords(password : str) -> str:
     return pwd_context.hash(password)
- 
