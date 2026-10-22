@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from db.connection import get_db_connection
-from models.event_models import EventDetailResponse, EventsResponse
+from src.models.event_models import EventDetailResponse, EventsResponse
 
 router = APIRouter()
 
