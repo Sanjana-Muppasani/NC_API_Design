@@ -1,9 +1,15 @@
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
 import psycopg2
 import json
 import os 
 import dotenv
 
-from connection import get_db_connection
+from db.connection import get_db_connection
+from src.auth import create_hashed_passwords
 
 conn = get_db_connection()
 cur = conn.cursor()
@@ -24,6 +30,9 @@ with open("db/data/rsvps.json") as f:
 
 with open("db/data/venues.json") as f: 
     venues_data = json.load(f)  
+
+for user in users_data: 
+    user["password"] = create_hashed_passwords(user["password"])
 
 for user in users_data: 
     cur.execute(
