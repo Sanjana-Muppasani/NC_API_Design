@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from db.connection import get_db_connection
 from src.models.auth_models import LoginRequest, RegisterRequest, RegisterRequestResponse
-from src.auth_helper import create_hashed_passwords
+from src.auth_helper import create_hashed_passwords, verify_password, create_access_token
 
 router = APIRouter()
 
@@ -60,5 +60,46 @@ def user_register(register_request: RegisterRequest) -> dict:
                 }
             }
 
+    finally:
+        conn.close()
+
+@router.post("/api/auth/login")
+def user_login(login_request: LoginRequest):
+    
+    conn = get_db_connection()
+    try:
+        cur = conn.cursor()
+
+        cur.execute(
+            """
+            SELECT id, password
+            FROM users
+            WHERE email = %s;
+            """,
+            (login_request.email,),
+        )
+
+        volunteer = cur.fetchone()
+        if volunteer is None:
+            raise HTTPException(
+                status_code=401,
+                detail="Invalid email or password",
+            )
+
+        volunteer_id = volunteer[0]
+        hashed_password = volunteer[1]
+
+        if not verify_password(
+            login_request.password,
+            hashed_password,
+        ):
+            raise HTTPException(
+                status_code=401,
+                detail="Invalid email or password",
+            )
+        access_token = create_access_token(volunteer_id)
+        return {
+            "token": access_token,
+        }
     finally:
         conn.close()
